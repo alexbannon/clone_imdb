@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180426151652) do
+ActiveRecord::Schema.define(version: 20180426163743) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "celebrities", force: :cascade do |t|
     t.string "name", null: false
-    t.string "photoUrl", null: false
-    t.string "profileUrl", null: false
+    t.string "photo_url", null: false
+    t.string "profile_url", null: false
     t.bigint "media_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20180426151652) do
   create_table "media", force: :cascade do |t|
     t.string "title", null: false
     t.string "url", null: false
-    t.decimal "rating", default: "0.0"
+    t.float "rating", default: 0.0
     t.string "director", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

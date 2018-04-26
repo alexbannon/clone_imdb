@@ -1,5 +1,5 @@
 class Celebrity < ApplicationRecord
-  belongs_to :medium
+  belongs_to :media
 
   validates :name, presence: true
 end
