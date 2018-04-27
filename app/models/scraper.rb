@@ -8,12 +8,17 @@ class Scraper
     (1..12).each do |month|
       (1..31).each do |day|
         puts "-- starting date #{month}/#{day} --"
-        self.class.process_date(month, day)
+        self.class.process_date(month, day, true)
       end
     end
   end
 
-  def self.process_date(month, day, offset = 1)
+  def process_one_date(month, day, offset)
+    offset ||= 1
+    self.class.process_date(month, day, false, offset)
+  end
+
+  def self.process_date(month, day, recursive, offset = 1)
     puts "processing #{offset} - #{offset + 49}"
     page = "https://www.imdb.com/search/name?birth_monthday=#{month}-#{day}&start=#{offset}"
 
@@ -43,7 +48,7 @@ class Scraper
 
           media = update_most_known_work(most_known_work_site)
 
-          update_celebrity(name, photo_url, profile_url, media)
+          update_celebrity(name, photo_url, profile_url, media, month, day)
         rescue Exception => e
           puts e
           puts page
@@ -51,7 +56,9 @@ class Scraper
         end
       end
 
-      process_date(month, day, offset + 50)
+      if recursive
+        process_date(month, day, true, offset + 50)
+      end
     else
       puts "** finished processing #{month}/#{day} **"
     end
@@ -97,12 +104,14 @@ class Scraper
   end
 
 
-  def self.update_celebrity(name, photo_url, profile_url, media)
+  def self.update_celebrity(name, photo_url, profile_url, media, month, day)
     Celebrity.where(:profile_url => profile_url).first_or_create!({
       :name => name,
       :photo_url => photo_url,
       :profile_url => profile_url,
-      :media_id => media.id
+      :media_id => media.id,
+      :birth_month => month,
+      :birth_day => day
     })
   end
 

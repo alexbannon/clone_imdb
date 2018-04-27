@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180426163743) do
+ActiveRecord::Schema.define(version: 20180426171136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,6 +22,8 @@ ActiveRecord::Schema.define(version: 20180426163743) do
     t.bigint "media_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "birth_month"
+    t.integer "birth_day"
     t.index ["media_id"], name: "index_celebrities_on_media_id"
   end
 

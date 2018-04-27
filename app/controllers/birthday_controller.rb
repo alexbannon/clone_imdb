@@ -1,18 +1,30 @@
 class BirthdayController < ApplicationController
 
-  def show
-    @celebrities = ['Hello World', 'Jon Snow']
+  def show_db
+    @celebrities = Celebrity.where(
+      birth_month: params[:month],
+      birth_day: params[:day]
+    )
+    render "show"
+
   end
 
   def show_scrape
-    require 'openssl'
     month = params[:month]
     day = params[:day]
-    doc = Nokogiri::HTML(open("http://www.imdb.com/search/name?birth_monthday=${month}-${day}", :ssl_verify_mode => OpenSSL::SSL::VERIFY_NONE))
+    offset = Integer(params[:offset])
 
-    entries = doc.css('.lagos-market-rates-inner')
-    rate = entries.css('table')[0].css('tr')[1].css('td')[1].text
-    @formattedrate = rate[6..8]
-    render template: 'parallel/home'
+    scraper = Scraper.new
+    scraper.process_one_date(month, day, offset)
+
+    @celebrities = Celebrity.where(
+      birth_month: params[:month],
+      birth_day: params[:day]
+    )
+
+    respond_to do |format|
+      format.html { render :show }
+      format.json { render :json => @celebrities.as_json(:include_media => true) }
+    end
   end
 end
